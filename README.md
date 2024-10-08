@@ -1,0 +1,1 @@
+This is a movie app project with tailwind and firebase.
