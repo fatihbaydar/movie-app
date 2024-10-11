@@ -1,9 +1,10 @@
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { auth } from "../auth/firebase";
 import { useNavigate } from "react-router-dom";
 import { toastErrorNotify, toastSuccessNotify } from "../helper/ToastNotify";
@@ -19,6 +20,10 @@ const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    userObserver();
+  }, []);
+
   const createUser = async (email, password) => {
     try {
       let userCredential = await createUserWithEmailAndPassword(
@@ -27,7 +32,7 @@ const AuthProvider = ({ children }) => {
         password
       );
       //    console.log(userCredential);
-      navigate("/login");
+      navigate("/");
       toastSuccessNotify("Registered successfully");
     } catch (error) {
       // console.log(error)
@@ -55,13 +60,24 @@ const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     signOut(auth).then(() => {
-        // Sign-out successful.
-        toastSuccessNotify("Logged out successfully");
-      })
+      // Sign-out successful.
+      toastSuccessNotify("Logged out successfully");
+    });
     //   .catch(error) ; {
     //     // An error happened.
     //     toastErrorNotify(error.message);
     //   };
+  };
+
+  const userObserver = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { email, displayName, photoUrl } = user;
+        setCurrentUser({ email, displayName, photoUrl });
+      } else {
+        setCurrentUser(false);
+      }
+    });
   };
   const values = { currentUser, createUser, signIn, logOut };
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

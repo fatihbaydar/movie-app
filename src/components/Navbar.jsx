@@ -12,8 +12,8 @@ import avatar from "../assets/icons/avatar.png";
 import { useAuthContext } from "../context/AuthProvider";
 
 export default function Navbar() {
-  const logOut = useAuthContext()
-  const currentUser = { displayName: "Baydar" };
+  const {logOut, currentUser} = useAuthContext()
+  // const currentUser = { displayName: "Baydar" };
   return (
     <>
    
