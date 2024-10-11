@@ -4,7 +4,7 @@ import { useAuthContext } from "../context/AuthProvider";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const { createUser } = useAuthContext();
+  const { signIn } = useAuthContext();
   const [info, setInfo] = useState({
     firstName: "",
     lastName: "",
@@ -19,7 +19,7 @@ const Login = () => {
   const { email, password, firstName, lastName } = info;
   const handleSubmit = (e) => {
     e.preventDefault();
-    createUser(email, password);
+    signIn(email, password);
   };
   return (
     <div className="flex justify-center">
