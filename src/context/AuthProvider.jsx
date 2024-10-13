@@ -3,6 +3,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { auth } from "../auth/firebase";
@@ -24,13 +25,17 @@ const AuthProvider = ({ children }) => {
     userObserver();
   }, []);
 
-  const createUser = async (email, password) => {
+  const createUser = async (email, password, displayName) => {
     try {
       let userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+      await updateProfile(auth.currentUser, {
+        displayName,
+        // displayName: displayName
+      });
       //    console.log(userCredential);
       navigate("/");
       toastSuccessNotify("Registered successfully");
@@ -70,6 +75,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const userObserver = () => {
+     //? Kullanıcının signin olup olmadığını takip eden ve kullanıcı değiştiğinde yeni kullanıcıyı response olarak dönen firebase metodu
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const { email, displayName, photoUrl } = user;
