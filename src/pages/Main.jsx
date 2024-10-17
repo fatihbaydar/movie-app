@@ -3,6 +3,7 @@ import { useMovieContext } from "../context/MovieProvider";
 import MovieCard from "../components/MovieCard";
 import Loading from "../components/Loading";
 import { toastWarnNotify } from "../helper/ToastNotify";
+import { useAuthContext } from "../context/AuthProvider";
 
 const API_KEY = process.env.REACT_APP_TMDB_KEY;
 const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=`;
@@ -10,11 +11,14 @@ const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}
 const Main = () => {
   const { movies, loading, getMovies } = useMovieContext();
   const [search, setSearch] = useState("");
+  const { currentUser } = useAuthContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (search) {
+    if (search.trim() && currentUser) {
       getMovies(SEARCH_API + search);
+    } else if (!currentUser) {
+      toastWarnNotify("please log in to serach");
     } else {
       toastWarnNotify("please enter a text");
     }
