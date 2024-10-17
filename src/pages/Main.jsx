@@ -18,7 +18,7 @@ const Main = () => {
     if (search.trim() && currentUser) {
       getMovies(SEARCH_API + search);
     } else if (!currentUser) {
-      toastWarnNotify("please log in to serach");
+      toastWarnNotify("please log in to search");
     } else {
       toastWarnNotify("please enter a text");
     }
